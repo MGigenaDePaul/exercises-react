@@ -1,40 +1,48 @@
 import { useState } from 'react'
 
-const Average = ({good, neutral, bad}) => {
-    const all = good + neutral + bad
-    if(all == 0) {
-        return <p>average {all}</p>
-    }
-    const average = (1 * good + 0 * neutral + (-1) * bad) / all
-    return <p>average {average}</p>
-}
-
-const Positive = ({good, neutral, bad}) => {
-    const all = good + neutral + bad
-    if (all == 0) {
-        return <p>positive {all}%</p>
-    }
-    return <p>positive {(good * 100) / all}%</p>
-}
-
 const Button = (props) => <button onClick={props.onClick}>{props.text}</button>
 
-const StatisticLine = (props) => <p>{props.text} {props.value}</p>
-
+// const StatisticLine = (props) => <p>{props.text} {props.value}</p>
 
 const Statistics = ({good, neutral, bad}) => {
-    if (good + neutral + bad == 0) {
+    const all = good + neutral + bad
+    if (all == 0) {
         return <p>No feedback given</p>
     }
+
+    const average = (1 * good + 0 * neutral + (-1) * bad) / all 
+    const positive = (good * 100) / all
+
     return (
         <>
-            <StatisticLine text="good" value={good} />
-            <StatisticLine text="neutral" value={neutral} />
-            <StatisticLine text="bad" value={bad} />
-            <StatisticLine text="all" value={good + neutral + bad}/>
-
-            <Average good = {good} neutral = {neutral} bad = {bad}/>
-            <Positive good = {good} neutral = {neutral} bad = {bad}/>
+            <table>
+                <tbody>
+                    <tr>
+                        <td>good</td>
+                        <td>{good}</td>
+                    </tr>
+                    <tr>
+                        <td>neutral</td>
+                        <td>{neutral}</td>
+                    </tr>
+                    <tr>
+                        <td>bad</td>
+                        <td>{bad}</td>
+                    </tr>
+                    <tr>
+                        <td>all</td>
+                        <td>{all}</td>
+                    </tr>
+                    <tr>
+                        <td>average</td>
+                        <td>{average}</td>
+                    </tr>
+                    <tr>
+                        <td>positive</td>
+                        <td>{positive}%</td>
+                    </tr>
+                </tbody>
+            </table>
         </>
     )     
 }
