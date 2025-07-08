@@ -12,18 +12,34 @@ const App = () => {
         'The only way to go fast, is to go well.'
     ]
     
-    const [selected, setSelected] = useState(0)
-    console.log(selected)
+    const [selected, setSelected] = useState(Math.floor(Math.random() * anecdotes.length))
+    const [votes, setVotes] = useState(Array(anecdotes.length).fill(0)) // new votes array filled with zeros
+
+    console.log("selected", selected)
     console.log(anecdotes[selected])
+    console.log("votes", votes)
 
     const randomAnecdote = () => {
-        const newSelected = Math.floor(Math.random() * anecdotes.length)
+        const newSelected = Math.floor(Math.random() * anecdotes.length) 
         setSelected(newSelected)
     }
+
+    const incrementVotes = () => {
+        const votesCopy = [...votes] // copy of the votes array
+        console.log("votesCopy", votesCopy)
+        votesCopy[selected] = votesCopy[selected] + 1  // increment the number of votes of the corresponding anecdote
+        setVotes(votesCopy) 
+        console.log("modified votesCopy", votesCopy)
+
+        return votesCopy[selected]
+    }
+
     return (
         <div>
+
             {anecdotes[selected]}
-            <br />
+            <p>has {votes[selected]} votes</p>
+            <button onClick = {() => incrementVotes()}>vote</button>
             <button onClick = {() => randomAnecdote()}>next anecdote</button>
         </div>
     )
