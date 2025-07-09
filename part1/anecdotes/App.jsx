@@ -43,8 +43,6 @@ const App = () => {
         votesCopy[selected] = votesCopy[selected] + 1  // increment the number of votes of the corresponding anecdote
         setVotes(votesCopy) 
         console.log("modified votesCopy", votesCopy)
-
-        return votesCopy[selected]
     }
 
 
