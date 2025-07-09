@@ -1,11 +1,11 @@
-const Total = ({course}) => {
-    let total = 0;
+const Total = ({parts}) => {
     
-    for (let i = 0; i < course.parts.length; i++){
-        total = total + course.parts[i].exercises
-    }
+    const initialValue = 0
+    const total = parts.reduce((accumulator, part) => {
+        console.log("what's happening", accumulator, part.exercises)
 
-    console.log("total", total)
+        return accumulator + part.exercises
+    }, initialValue)
 
     return (
         <b> <p>total of {total} exercises</p> </b>
