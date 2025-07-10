@@ -19,6 +19,11 @@ const App = () => {
         setNewName('')
     }
 
+    const filteredPersons = persons.filter(person => (person.name.toLowerCase() === newName.toLowerCase()) 
+        ? alert(`${newName} is already added`) 
+        : persons.map(person => <li key={person.id}>{person.name}</li>) // also works if i put <li key={person.id}>{person.name}</li>
+    ) 
+
     return (
         <div>
         <h2>Phonebook</h2>
@@ -31,7 +36,7 @@ const App = () => {
             </div>
         </form>
         <h2>Numbers</h2>
-            {persons.map(person => <li key={person.id}> {person.name} </li>)}
+            {filteredPersons.map(person => <li key={person.id}>{person.name}</li>)}
         </div>
     )
 }
