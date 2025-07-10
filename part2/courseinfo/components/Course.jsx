@@ -1,4 +1,4 @@
-const Header = ({course}) => <h1>{course}</h1>
+const Header = ({course}) => <h2>{course}</h2>
 
 const Total = ({courses}) => {
     const initialValue = 0
@@ -73,9 +73,11 @@ const Course = () => {
 
     return (
         <div>
-            <Header course={courses.name} />
+            <h1>Web development curriculum</h1>
+            <Header course={courses[0].name} />
             <Content parts={courses[0].parts} />
             <Total courses={courses[0]} />
+            <Header course={courses[1].name} />
             <Content parts={courses[1].parts} />
             <Total courses={courses[1]} />
         </div>
