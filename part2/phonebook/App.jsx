@@ -13,9 +13,9 @@ const PersonForm = ({addPerson, newName, handleNameChange, handleNumberChange, n
         </form>
 )
 
-const Persons = ({persons, newName, searchTerm, deletePerson}) => {
-    const filteredPersons = persons.filter(person => (person.name.toLowerCase() === newName.toLowerCase()) 
-        ? alert(`${newName} is already added to phonebook`) 
+const Persons = ({persons, newName, searchTerm, deletePerson, replaceOldNumber}) => {
+    const filteredPersons = persons.filter(person => (person.name.toLowerCase() === newName.toLowerCase())
+        ? replaceOldNumber(person.id) 
         : persons.map(person => <li key={person.id}>{person.name}</li>)
     )
     console.log(filteredPersons)
@@ -46,15 +46,30 @@ const App = () => {
     }, [])
     console.log('render', persons.length, 'persons')
 
+    const replaceOldNumber = (id) => {
+        const person = persons.find(person => person.id === id)
+        const changedPerson = {...person, number: newNumber}
+        console.log("found person", person)
+        console.log("changed person", changedPerson)
+
+        if(window.confirm((`${newName} is already added to phonebook, replace the old number with a new one?`))) {
+            personService.update(id, changedPerson).then(returnedPerson => {
+                setPersons(persons.map(person => person.id === id ? returnedPerson : person))
+            })
+            .catch(() => {
+                console.log("Couldn't update number")
+            })
+        }
+    } 
+
     const deletePerson = (id) => {
         const person = persons.find(person => person.id === id)
         console.log("found person to delete", person)
         if (window.confirm(`Delete ${person.name}?`)) {
             personService.eliminate(id).then(() => {
-                console.log("eliminate Person")
                 setPersons(persons.filter(person => person.id !== id))
             })
-            .catch(error => {
+            .catch(() => {
                 console.log(`${person.name} was already deleted from the server`)
                 setPersons(persons.filter(person => person.id !== id))
             })
@@ -70,7 +85,7 @@ const App = () => {
         event.preventDefault()
         const personObject = {
             name: newName,
-            number: newNumber,
+            number:newNumber
         }
 
         personService.create(personObject).then(returnedPerson => {
@@ -97,8 +112,8 @@ const App = () => {
             <h3>add a new</h3>
                 <PersonForm addPerson={addPerson} handleNameChange={handleNameChange} handleNumberChange={handleNumberChange}/>
             <h3>Numbers</h3>
-                <Persons searchTerm={searchTerm} newName={newName} persons={persons} deletePerson={deletePerson}/>
-        </div>
+                <Persons searchTerm={searchTerm} newName={newName} persons={persons} deletePerson={deletePerson} replaceOldNumber={replaceOldNumber}/>
+        </div>  
     )
 }
 
