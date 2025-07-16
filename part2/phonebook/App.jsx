@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react'
 import personService from './services/persons'
+import Notification from './components/Notification'
+import './index.css'
 
 const Filter = ({searchTerm, handleSearchTerm}) => (
     <div>filter shown with <input value={searchTerm} onChange={handleSearchTerm}/> </div>
@@ -13,13 +15,7 @@ const PersonForm = ({addPerson, newName, handleNameChange, handleNumberChange, n
         </form>
 )
 
-const Persons = ({persons, newName, searchTerm, deletePerson, replaceOldNumber}) => {
-    const filteredPersons = persons.filter(person => (person.name.toLowerCase() === newName.toLowerCase())
-        ? replaceOldNumber(person.id) 
-        : persons.map(person => <li key={person.id}>{person.name}</li>)
-    )
-    console.log(filteredPersons)
-
+const Persons = ({persons, searchTerm, deletePerson}) => {
     const filterPeopleByName = persons.filter(person => person.name.toLowerCase().includes(searchTerm.toLowerCase()))
     console.log(filterPeopleByName)
 
@@ -36,6 +32,7 @@ const App = () => {
     const [newName, setNewName] = useState('')
     const [newNumber, setNewNumber] = useState('')
     const [searchTerm, setSearchTerm] = useState('') 
+    const [message, setMessage] = useState('a person or an updated number will be added')
 
     useEffect(() => {
         console.log('effect')
@@ -45,22 +42,6 @@ const App = () => {
         })
     }, [])
     console.log('render', persons.length, 'persons')
-
-    const replaceOldNumber = (id) => {
-        const person = persons.find(person => person.id === id)
-        const changedPerson = {...person, number: newNumber}
-        console.log("found person", person)
-        console.log("changed person", changedPerson)
-
-        if(window.confirm((`${newName} is already added to phonebook, replace the old number with a new one?`))) {
-            personService.update(id, changedPerson).then(returnedPerson => {
-                setPersons(persons.map(person => person.id === id ? returnedPerson : person))
-            })
-            .catch(() => {
-                console.log("Couldn't update number")
-            })
-        }
-    } 
 
     const deletePerson = (id) => {
         const person = persons.find(person => person.id === id)
@@ -81,18 +62,48 @@ const App = () => {
         setNewName(event.target.value)
     }
 
+    const replaceOldNumber = (id) => {
+        const person = persons.find(person => person.id === id)
+        const changedPerson = {...person, number: newNumber}
+        console.log("found person", person)
+        console.log("changed person", changedPerson)
+
+        if(window.confirm((`${newName} is already added to phonebook, replace the old number with a new one?`))) {
+            personService.update(id, changedPerson).then(returnedPerson => {
+                setPersons(persons.map(person => person.id === id ? returnedPerson : person))
+                setMessage(`${person.name} number is changed to ${changedPerson.number}`)
+                setTimeout(() => {
+                    setMessage(null)
+                }, 5000)
+            })
+            .catch(() => {
+                console.log("Couldn't update number")
+            })
+        }
+    } 
+
     const addPerson = (event) => {
         event.preventDefault()
-        const personObject = {
-            name: newName,
-            number:newNumber
-        }
+        const personExists = persons.find(person => person.name.toLowerCase() === newName.toLowerCase())
 
-        personService.create(personObject).then(returnedPerson => {
-            setPersons(persons.concat(returnedPerson))
-            setNewName('')
-            setNewNumber('')
-        })
+        if(personExists){ 
+            replaceOldNumber(personExists.id)
+        } else {
+            const personObject = {
+                name: newName,
+                number: newNumber
+            }
+
+            personService.create(personObject).then(returnedPerson => {
+                setPersons(persons.concat(returnedPerson))
+                setNewName('')
+                setNewNumber('')
+                setMessage(`Added ${personObject.name}`)
+                setTimeout(() => {
+                    setMessage(null)
+                }, 5000)
+            })
+        }
     }
 
     const handleNumberChange = (event) => {
@@ -108,6 +119,7 @@ const App = () => {
     return (
         <div>
             <h2>Phonebook</h2>
+                <Notification addMessage={message}/>
                 <Filter handleSearchTerm={handleSearchTerm}/>
             <h3>add a new</h3>
                 <PersonForm addPerson={addPerson} handleNameChange={handleNameChange} handleNumberChange={handleNumberChange}/>
