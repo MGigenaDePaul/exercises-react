@@ -88,6 +88,7 @@ const App = () => {
 
         if(personExists){ 
             replaceOldNumber(personExists.id)
+            setMessage(`Information of ${personExists.name} has already been removed from server`)
         } else {
             const personObject = {
                 name: newName,

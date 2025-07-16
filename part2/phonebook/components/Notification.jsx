@@ -2,10 +2,14 @@ const Notification = ({addMessage}) => {
     if (addMessage === null) {
         return null;
     }
-
+    
+    const className = addMessage.includes('removed') ? 'message removed' : 'message success'
+    
     return (
-        <div className='message'>
-            {addMessage}
+        <div>
+            <div className={className}>
+                {addMessage}
+            </div>
         </div>
     )
 }
