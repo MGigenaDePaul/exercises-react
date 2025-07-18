@@ -45,7 +45,7 @@ const App = () => {
                         <ul>
                             {Object.values(selectedCountry.languages).map((lang, index) => <li key={index}>{lang}</li>)} {/*learned the Object.values() method*/}
                         </ul> 
-                        <img src={selectedCountry.flags.png}/>
+                        <img src={selectedCountry.flags.png} alt={`flag of ${selectedCountry.name.common}`}/>
                     </div>)}
         </div>
     )
