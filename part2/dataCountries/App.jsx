@@ -22,9 +22,7 @@ const App = () => {
 
     const dataCountry = (cca3) => {
         const foundCountry = countries.find(country => country.cca3 === cca3) 
-        
         console.log("found country", foundCountry)
-        console.log('filter countries', filterCountries)
         setSelectedCountry(foundCountry)
     }
 
