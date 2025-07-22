@@ -26,7 +26,12 @@ let persons = [
 ]
 
 app.use(express.json())
-app.use(morgan('tiny'))
+
+app.use(morgan(':method :url :response-time ms :body')) // custom token formats
+
+morgan.token('body', function getBody(req, res) {
+    return JSON.stringify(req.body)
+})
 
 app.get('/', (request, response) => {
     response.send('Hello persons')
